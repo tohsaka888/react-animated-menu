@@ -13,10 +13,11 @@ export type MenuProps = {
 }
 
 export type MenuContextProps = {
-  activeKeys: React.Key[],
+  activeKeys: React.Key[];
   setActiveKeys: React.Dispatch<React.SetStateAction<React.Key[]>>
 }
 
 export type CommonProps = {
-  itemStyle?: React.CSSProperties
+  itemStyle?: React.CSSProperties;
+  underlineStyle?: React.CSSProperties; 
 }

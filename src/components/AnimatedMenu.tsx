@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState, HTMLAttributes } from 'react'
 import { MenuContainer } from './menu.style'
 import { CommonProps, MenuItemProps, MenuProps } from './type'
 import { animated, config, useSpring } from 'react-spring'
@@ -40,7 +40,7 @@ function AnimatedMenuItem(
   )
 }
 
-const AnimatedUnderLine = React.memo(function ({ activeKey }: { activeKey: React.Key }) {
+const AnimatedUnderLine = React.memo(function ({ activeKey, underlineStyle }: { activeKey: React.Key } & CommonProps) {
   const activeItemRef = useContext(ActiveItemContext)!
   const [anime, setAnime] = useSpring(() => (
     {
@@ -60,23 +60,23 @@ const AnimatedUnderLine = React.memo(function ({ activeKey }: { activeKey: React
   }, [activeItemRef, setAnime, activeKey])
 
   return (
-    <animated.div style={{ position: 'absolute', height: '2px', bottom: '0px', backgroundColor: '#1890ff', ...anime }} />
+    <animated.div style={{ position: 'absolute', height: '2px', bottom: '0px', backgroundColor: '#1890ff', ...underlineStyle, ...anime }} />
   )
 })
 
 
 
-function AnimatedMenu({ items, itemStyle, defaultSelectedKeys }: MenuProps & CommonProps) {
+function AnimatedMenu({ items, itemStyle, defaultSelectedKeys, underlineStyle, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
   const [activeKeys, setActiveKeys] = useState<React.Key[]>(defaultSelectedKeys || [])
   const activeItemRef = useRef<HTMLDivElement>(null!)
   return (
     <MenuContext.Provider value={{ activeKeys, setActiveKeys }}>
       <ActiveItemContext.Provider value={activeItemRef}>
-        <MenuContainer>
+        <MenuContainer {...props}>
           {items.map((item) => {
             return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} />
           })}
-          <AnimatedUnderLine activeKey={JSON.stringify(activeKeys)} />
+          <AnimatedUnderLine activeKey={JSON.stringify(activeKeys)} underlineStyle={underlineStyle} />
         </MenuContainer>
       </ActiveItemContext.Provider>
     </MenuContext.Provider>
