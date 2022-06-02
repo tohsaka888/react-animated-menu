@@ -22,7 +22,7 @@ const items: MenuItemProps[] = [
 function App() {
   return (
     <>
-      <AnimatedMenu items={items} itemStyle={{ padding: '8px 16px', fontWeight: 'bold' }} defaultSelectedKeys={['news']} style={{ height: '60px' }} underlineStyle={{ height: '2px' }} />
+      <AnimatedMenu items={items} itemStyle={{ padding: '8px 16px' }} defaultSelectedKeys={['news']} style={{ height: '60px' }} underlineStyle={{ height: '2px' }} />
     </>
   );
 }
