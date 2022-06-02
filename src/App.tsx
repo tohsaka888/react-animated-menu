@@ -7,6 +7,7 @@ const items: MenuItemProps[] = [
   {
     label: 'HomePage',
     key: 'index',
+    icon: <div>111</div>,
   },
   {
     label: 'Music',
