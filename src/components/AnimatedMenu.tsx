@@ -1,12 +1,13 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { MenuContainer } from './menu.style'
 import { CommonProps, MenuItemProps, MenuProps } from './type'
 import { animated, config, useSpring } from 'react-spring'
-import { MenuContext } from './Context'
+import { ActiveItemContext, MenuContext } from './Context'
 function AnimatedMenuItem(
   { label, icon, itemStyle, menuKey, ...props }
     : MenuItemProps & CommonProps & { menuKey: React.Key }) {
   const { activeKeys, setActiveKeys } = useContext(MenuContext)!
+  const activeItemRef = useContext(ActiveItemContext)!
   const isActive = !!activeKeys.find(item => item === menuKey)
   const anime = useSpring({
     color: isActive ? '#1890ff' : '#000',
@@ -21,23 +22,63 @@ function AnimatedMenuItem(
     <animated.div
       onClick={clickEvent}
       {...props}
-      style={{ padding: '8px 12px', userSelect: 'none', cursor: 'pointer', ...itemStyle, ...anime }}
+      style={{
+        padding: '8px 12px',
+        userSelect: 'none',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...itemStyle,
+        ...anime
+      }}
+      ref={isActive ? activeItemRef : null}
     >
-      {icon}
+      {icon && <div style={{ marginRight: '8px' }}>{icon}</div>}
       {label}
     </animated.div>
   )
 }
 
+const AnimatedUnderLine = React.memo(function () {
+  const activeItemRef = useContext(ActiveItemContext)!
+  const springOption = useMemo(() => ({
+    width: '0px',
+    left: 0,
+  }), [])
+  const [anime, setAnime] = useSpring(() => {
+    return {
+      ...springOption
+    }
+  }, [])
+
+  useEffect(() => {
+    if (activeItemRef) {
+      setAnime.start({
+        width: activeItemRef.current.offsetWidth + 'px',
+        left: activeItemRef.current.offsetLeft,
+      })
+    }
+  }, [activeItemRef, setAnime])
+
+  return (
+    <animated.div style={{ position: 'absolute', height: '2px', bottom: '0px', backgroundColor: '#1890ff', ...anime }} />
+  )
+})
+
 function AnimatedMenu({ items, itemStyle, defaultSelectedKeys }: MenuProps & CommonProps) {
   const [activeKeys, setActiveKeys] = useState<React.Key[]>(defaultSelectedKeys || [])
+  const activeItemRef = useRef<HTMLDivElement>(null!)
   return (
     <MenuContext.Provider value={{ activeKeys, setActiveKeys }}>
-      <MenuContainer>
-        {items.map((item) => {
-          return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} />
-        })}
-      </MenuContainer>
+      <ActiveItemContext.Provider value={activeItemRef}>
+        <MenuContainer>
+          {items.map((item) => {
+            return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} />
+          })}
+          {activeItemRef && <AnimatedUnderLine key={JSON.stringify(activeKeys)} />}
+        </MenuContainer>
+      </ActiveItemContext.Provider>
     </MenuContext.Provider>
   )
 }
