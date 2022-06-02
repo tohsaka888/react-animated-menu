@@ -1,4 +1,5 @@
 import React from 'react';
+import { config } from 'react-spring';
 import './App.css';
 import AnimatedMenu from './components/AnimatedMenu';
 import { MenuItemProps } from './components/type';
@@ -28,6 +29,7 @@ function App() {
         defaultSelectedKeys={['news']}
         style={{ height: '60px' }}
         underlineStyle={{ height: '2px' }}
+        config={config.gentle}
       />
     </>
   );

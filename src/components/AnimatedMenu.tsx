@@ -1,17 +1,17 @@
 import React, { useCallback, useContext, useEffect, useRef, useState, HTMLAttributes } from 'react'
 import { MenuContainer } from './menu.style'
 import { CommonProps, MenuItemProps, MenuProps } from './type'
-import { animated, config, useSpring } from 'react-spring'
+import { animated, config as springConfig, useSpring } from 'react-spring'
 import { ActiveItemContext, MenuContext } from './Context'
 function AnimatedMenuItem(
-  { label, icon, itemStyle, menuKey, ...props }
+  { label, icon, itemStyle, menuKey, config, ...props }
     : MenuItemProps & CommonProps & { menuKey: React.Key }) {
   const { activeKeys, setActiveKeys } = useContext(MenuContext)!
   const activeItemRef = useContext(ActiveItemContext)!
   const isActive = !!activeKeys.find(item => item === menuKey)
   const anime = useSpring({
     color: isActive ? '#1890ff' : '#000',
-    config: config.gentle
+    config: config && springConfig.gentle
   })
 
   const clickEvent = useCallback(() => {
@@ -40,13 +40,13 @@ function AnimatedMenuItem(
   )
 }
 
-const AnimatedUnderLine = React.memo(function ({ activeKey, underlineStyle }: { activeKey: React.Key } & CommonProps) {
+const AnimatedUnderLine = React.memo(function ({ activeKey, underlineStyle, config }: { activeKey: React.Key } & CommonProps) {
   const activeItemRef = useContext(ActiveItemContext)!
   const [anime, setAnime] = useSpring(() => (
     {
       width: '0px',
       left: 0,
-      config: config.gentle
+      config: config && springConfig.gentle
     }
   ), [])
 
@@ -66,7 +66,7 @@ const AnimatedUnderLine = React.memo(function ({ activeKey, underlineStyle }: { 
 
 
 
-function AnimatedMenu({ items, itemStyle, defaultSelectedKeys, underlineStyle, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
+function AnimatedMenu({ items, itemStyle, config, defaultSelectedKeys, underlineStyle, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
   const [activeKeys, setActiveKeys] = useState<React.Key[]>(defaultSelectedKeys || [])
   const activeItemRef = useRef<HTMLDivElement>(null!)
   return (
@@ -74,9 +74,9 @@ function AnimatedMenu({ items, itemStyle, defaultSelectedKeys, underlineStyle, .
       <ActiveItemContext.Provider value={activeItemRef}>
         <MenuContainer {...props}>
           {items.map((item) => {
-            return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} />
+            return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} config={config} />
           })}
-          <AnimatedUnderLine activeKey={JSON.stringify(activeKeys)} underlineStyle={underlineStyle} />
+          <AnimatedUnderLine activeKey={JSON.stringify(activeKeys)} underlineStyle={underlineStyle} config={config} />
         </MenuContainer>
       </ActiveItemContext.Provider>
     </MenuContext.Provider>

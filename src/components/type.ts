@@ -1,4 +1,5 @@
 import React from "react";
+import { SpringConfig } from "react-spring";
 
 export type MenuItemProps = {
   label: string;
@@ -20,4 +21,5 @@ export type MenuContextProps = {
 export type CommonProps = {
   itemStyle?: React.CSSProperties;
   underlineStyle?: React.CSSProperties; 
+  config?: SpringConfig
 }
