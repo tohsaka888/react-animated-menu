@@ -4,13 +4,13 @@ import { CommonProps, MenuItemProps, MenuProps } from './type'
 import { animated, config as springConfig, useSpring } from 'react-spring'
 import { ActiveItemContext, MenuContext } from './Context'
 function AnimatedMenuItem(
-  { label, icon, itemStyle, menuKey, config, ...props }
+  { label, icon, itemStyle, menuKey, config, color, ...props }
     : MenuItemProps & CommonProps & { menuKey: React.Key }) {
   const { activeKeys, setActiveKeys } = useContext(MenuContext)!
   const activeItemRef = useContext(ActiveItemContext)!
   const isActive = !!activeKeys.find(item => item === menuKey)
   const anime = useSpring({
-    color: isActive ? '#1890ff' : '#000',
+    color: isActive ? '#1890ff' : color || '#000',
     config: config && springConfig.gentle
   })
 
@@ -66,7 +66,7 @@ const AnimatedUnderLine = React.memo(function ({ activeKey, underlineStyle, conf
 
 
 
-function AnimatedMenu({ items, itemStyle, config, defaultSelectedKeys, underlineStyle, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
+function AnimatedMenu({ items, itemStyle, config, defaultSelectedKeys, underlineStyle, color, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
   const [activeKeys, setActiveKeys] = useState<React.Key[]>(defaultSelectedKeys || [])
   const activeItemRef = useRef<HTMLDivElement>(null!)
   return (
@@ -74,7 +74,7 @@ function AnimatedMenu({ items, itemStyle, config, defaultSelectedKeys, underline
       <ActiveItemContext.Provider value={activeItemRef}>
         <MenuContainer {...props}>
           {items.map((item) => {
-            return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} config={config} />
+            return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} config={config} color={color} />
           })}
           <AnimatedUnderLine activeKey={JSON.stringify(activeKeys)} underlineStyle={underlineStyle} config={config} />
         </MenuContainer>

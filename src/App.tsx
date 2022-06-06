@@ -30,6 +30,7 @@ function App() {
         style={{ height: '60px' }}
         underlineStyle={{ height: '2px' }}
         config={config.gentle}
+        color={"red"}
       />
     </>
   );

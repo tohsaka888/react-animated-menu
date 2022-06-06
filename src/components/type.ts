@@ -21,5 +21,6 @@ export type MenuContextProps = {
 export type CommonProps = {
   itemStyle?: React.CSSProperties;
   underlineStyle?: React.CSSProperties; 
-  config?: SpringConfig
+  config?: SpringConfig;
+  color?: string;
 }
