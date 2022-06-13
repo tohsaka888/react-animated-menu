@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useEffect, useRef, useState, HTMLAttributes } from 'react'
-import { MenuContainer } from './menu.style'
 import { CommonProps, MenuItemProps, MenuProps } from './type'
 import { animated, config as springConfig, useSpring } from 'react-spring'
 import { ActiveItemContext, MenuContext } from './Context'
@@ -66,18 +65,18 @@ const AnimatedUnderLine = React.memo(function ({ activeKey, underlineStyle, conf
 
 
 
-function AnimatedMenu({ items, itemStyle, config, defaultSelectedKeys, underlineStyle, color, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
+function AnimatedMenu({ items, itemStyle, config, defaultSelectedKeys, underlineStyle, color, style, ...props }: MenuProps & CommonProps & HTMLAttributes<HTMLDivElement>) {
   const [activeKeys, setActiveKeys] = useState<React.Key[]>(defaultSelectedKeys || [])
   const activeItemRef = useRef<HTMLDivElement>(null!)
   return (
     <MenuContext.Provider value={{ activeKeys, setActiveKeys }}>
       <ActiveItemContext.Provider value={activeItemRef}>
-        <MenuContainer {...props}>
+        <div style={{ display: 'flex', alignItems: 'center', ...style }} {...props}>
           {items.map((item) => {
             return <AnimatedMenuItem {...item} itemStyle={itemStyle} menuKey={item.key} config={config} color={color} />
           })}
           <AnimatedUnderLine activeKey={JSON.stringify(activeKeys)} underlineStyle={underlineStyle} config={config} />
-        </MenuContainer>
+        </div>
       </ActiveItemContext.Provider>
     </MenuContext.Provider>
   )
